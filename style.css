@@ -900,6 +900,201 @@ body {
 
 
 /* =========================================
+   SCREEN 2.5 — MEMORY LANE
+========================================= */
+
+.memory-lane-screen {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 16;
+
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            #fff9fb 0%,
+            #fff0f5 45%,
+            #ffe3ee 100%
+        );
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.6s ease,
+        visibility 0.6s ease;
+}
+
+
+.memory-lane-screen.active {
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+.memory-lane-content {
+    max-width: 640px;
+
+    margin: 0 auto;
+
+    padding: 70px 24px 90px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 40px;
+
+    text-align: center;
+}
+
+
+.memory-lane-small {
+    font-size: 13px;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    color: #b47c89;
+
+    margin-bottom: 12px;
+}
+
+
+.memory-lane-heading h2 {
+    font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+
+    font-size: clamp(32px, 6vw, 52px);
+
+    color: #4a3038;
+}
+
+
+.memory-card {
+    width: 100%;
+
+    max-width: 480px;
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    padding: 30px 26px;
+
+    box-shadow:
+        0 14px 34px rgba(232, 93, 117, 0.15);
+
+    opacity: 0;
+}
+
+
+.memory-card.in-view {
+    animation: fadeUp 0.9s ease forwards;
+}
+
+
+.memory-card-icon {
+    font-size: 40px;
+
+    margin-bottom: 14px;
+}
+
+
+.memory-card h3 {
+    font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+
+    font-size: 24px;
+
+    color: #e85d75;
+
+    margin-bottom: 10px;
+}
+
+
+.memory-card p {
+    font-size: 16px;
+
+    line-height: 1.6;
+
+    color: #765761;
+}
+
+
+.memory-lane-continue p {
+    font-size: 13px;
+
+    letter-spacing: 1px;
+
+    color: #a06f7d;
+
+    margin-bottom: 14px;
+}
+
+
+.continue-birthday-button {
+    border: none;
+
+    background: #e85d75;
+
+    color: white;
+
+    padding: 17px 30px;
+
+    border-radius: 100px;
+
+    font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    box-shadow:
+        0 12px 30px rgba(232, 93, 117, 0.28);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.continue-birthday-button:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 18px 35px rgba(232, 93, 117, 0.38);
+}
+
+
+.continue-birthday-button:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================
    BATS
 ========================================= */
 
@@ -1182,6 +1377,229 @@ body {
     font-size: 32px;
 
     letter-spacing: 10px;
+}
+
+
+/* =========================================
+   LIGHTS TOGGLE + NIGHT SCENE
+========================================= */
+
+.night-toggle {
+    position: fixed;
+
+    top: 18px;
+    right: 18px;
+
+    z-index: 6;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: none;
+
+    border-radius: 100px;
+
+    padding: 10px 18px;
+
+    background: #ffffff;
+
+    color: #4a3038;
+
+    font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    box-shadow:
+        0 8px 20px rgba(232, 93, 117, 0.2);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.4s ease,
+        color 0.4s ease;
+}
+
+
+.night-toggle:hover {
+    transform: translateY(-2px);
+}
+
+
+.night-toggle:active {
+    transform: scale(0.95);
+}
+
+
+.night-toggle.night-active {
+    background: #2b2140;
+
+    color: #ffe9c7;
+}
+
+
+.night-toggle-icon {
+    font-size: 16px;
+}
+
+
+.night-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 4;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            #251c3d 0%,
+            #140f24 60%,
+            #0b0817 100%
+        );
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+
+.night-overlay.active {
+    opacity: 1;
+
+    visibility: visible;
+}
+
+
+.moon {
+    position: absolute;
+
+    top: 8%;
+    right: 12%;
+
+    font-size: clamp(46px, 8vw, 74px);
+
+    filter:
+        drop-shadow(0 0 25px rgba(255, 244, 200, 0.65));
+
+    opacity: 0;
+
+    transform: scale(0.6);
+
+    transition:
+        opacity 1s ease 0.3s,
+        transform 1s ease 0.3s;
+}
+
+
+.night-overlay.active .moon {
+    opacity: 1;
+
+    transform: scale(1);
+}
+
+
+.stars-layer {
+    position: absolute;
+
+    inset: 0;
+}
+
+
+.star {
+    position: absolute;
+
+    color: #fff6da;
+
+    opacity: 0;
+
+    animation: starTwinkle 2.6s ease-in-out infinite;
+}
+
+
+.night-overlay.active .star {
+    opacity: var(--star-opacity, 0.8);
+}
+
+
+@keyframes starTwinkle {
+
+    0%,
+    100% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+}
+
+
+.fireflies-layer {
+    position: absolute;
+
+    inset: 0;
+}
+
+
+.firefly {
+    position: absolute;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #fff6c8 0%,
+            #ffe27a 45%,
+            rgba(255, 226, 122, 0) 75%
+        );
+
+    box-shadow:
+        0 0 10px 3px rgba(255, 226, 122, 0.85);
+
+    opacity: 0;
+
+    transition:
+        left 1.6s ease,
+        top 1.6s ease,
+        opacity 0.6s ease;
+
+    animation: fireflyFlicker 1.8s ease-in-out infinite;
+}
+
+
+@keyframes fireflyFlicker {
+
+    0%,
+    100% {
+        transform: scale(0.85);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
 }
 
 
@@ -2134,6 +2552,8 @@ body {
         flex-direction: column;
 
         align-items: center;
+
+        gap: 24px;
     }
 
 
@@ -2141,6 +2561,8 @@ body {
         text-align: center;
 
         padding-top: 0;
+
+        flex: 0 1 auto;
     }
 
 
@@ -2170,6 +2592,66 @@ body {
 
     .bat {
         font-size: 25px !important;
+    }
+
+
+    /* Memory lane mobile */
+
+    .memory-lane-content {
+        padding: 50px 18px 70px;
+
+        gap: 28px;
+    }
+
+
+    .memory-lane-heading h2 {
+        font-size: 30px;
+    }
+
+
+    .memory-card {
+        padding: 22px 18px;
+
+        border-radius: 18px;
+    }
+
+
+    .memory-card-icon {
+        font-size: 32px;
+    }
+
+
+    .memory-card h3 {
+        font-size: 19px;
+    }
+
+
+    .memory-card p {
+        font-size: 14px;
+    }
+
+
+    .continue-birthday-button {
+        padding: 14px 22px;
+
+        font-size: 11px;
+    }
+
+
+    /* Lights toggle mobile */
+
+    .night-toggle {
+        top: 12px;
+        right: 12px;
+
+        padding: 8px 14px;
+
+        font-size: 10px;
+    }
+
+
+    .night-toggle-icon {
+        font-size: 13px;
     }
 
 }

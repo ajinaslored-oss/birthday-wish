@@ -45,6 +45,43 @@ const batContainer =
 
 
 /* =========================================
+   MEMORY LANE ELEMENTS
+========================================= */
+
+const memoryLaneScreen =
+    document.getElementById("memoryLaneScreen");
+
+const continueBirthdayButton =
+    document.getElementById("continueBirthdayButton");
+
+const memoryCards =
+    document.querySelectorAll(".memory-card");
+
+
+/* =========================================
+   LIGHTS TOGGLE ELEMENTS
+========================================= */
+
+/*
+   Change this one line any time you want the
+   fireflies to spell out a different name.
+*/
+const BIRTHDAY_NAME = "Happy Birthday";
+
+const nightToggle =
+    document.getElementById("nightToggle");
+
+const nightOverlay =
+    document.getElementById("nightOverlay");
+
+const starsLayer =
+    document.getElementById("starsLayer");
+
+const firefliesLayer =
+    document.getElementById("firefliesLayer");
+
+
+/* =========================================
    PHOTO CAROUSEL
 ========================================= */
 
@@ -93,7 +130,7 @@ surpriseButton.addEventListener("click", function () {
 
 
 /* =========================================
-   SCREEN 2 → SCREEN 3
+   SCREEN 2 → SCREEN 2.5 (MEMORY LANE)
    UNICORNS RUN INTO THE BACKGROUND
 ========================================= */
 
@@ -118,43 +155,14 @@ seeSurpriseButton.addEventListener("click", function () {
 
     /*
        At EXACTLY 0.9 seconds:
-       switch to the birthday scene (gives the unicorns
-       a moment to turn around and start running first).
+       reveal the memory lane screen (gives the
+       unicorns a moment to turn around and start
+       running first).
     */
 
     setTimeout(function () {
 
-        /*
-           Open the existing curtains.
-        */
-
-        body.classList.add("curtains-open");
-
-
-        /*
-           Reveal the existing birthday content.
-        */
-
-        birthdayScreen.classList.add("revealed");
-
-
-        /*
-           Release the existing balloons.
-        */
-
-        createBalloons();
-
-
-        /*
-           Launch the existing confetti.
-        */
-
-        setTimeout(function () {
-
-            createConfetti();
-
-        }, 300);
-
+        memoryLaneScreen.classList.add("active");
 
     }, 900);
 
@@ -170,6 +178,83 @@ seeSurpriseButton.addEventListener("click", function () {
         unicornScreen.classList.remove("active");
 
     }, 2200);
+
+});
+
+
+/* =========================================
+   MEMORY LANE — SCROLL-TRIGGERED CARDS
+========================================= */
+
+const memoryObserver = new IntersectionObserver(function (entries) {
+
+    entries.forEach(function (entry) {
+
+        if (entry.isIntersecting) {
+
+            entry.target.classList.add("in-view");
+
+            memoryObserver.unobserve(entry.target);
+
+        }
+
+    });
+
+}, {
+    root: memoryLaneScreen,
+    threshold: 0.25
+});
+
+memoryCards.forEach(function (card) {
+
+    memoryObserver.observe(card);
+
+});
+
+
+/* =========================================
+   SCREEN 2.5 → SCREEN 3
+   MEMORY LANE INTO THE BIRTHDAY REVEAL
+========================================= */
+
+continueBirthdayButton.addEventListener("click", function () {
+
+    /*
+       Fade out the memory lane screen.
+    */
+
+    memoryLaneScreen.classList.remove("active");
+
+
+    /*
+       A second wave of bats for the big reveal.
+    */
+
+    createBats();
+
+
+    /*
+       Open the existing curtains and reveal
+       the birthday content, same timing as before.
+    */
+
+    setTimeout(function () {
+
+        body.classList.add("curtains-open");
+
+        birthdayScreen.classList.add("revealed");
+
+        createBalloons();
+
+
+        setTimeout(function () {
+
+            createConfetti();
+
+        }, 300);
+
+
+    }, 900);
 
 });
 
@@ -624,3 +709,303 @@ prevArrow.addEventListener(
 
     }
 );
+
+
+/* =========================================
+   LIGHTS TOGGLE — NIGHT SKY
+========================================= */
+
+let isNightOn = false;
+let fireflyTimeout = null;
+
+
+/*
+   Scatter a fixed field of stars once. They stay
+   in the DOM and just fade in/out with the overlay.
+*/
+(function createStars() {
+
+    const starCount = 70;
+
+    const starSymbols = [
+        "✦",
+        "✧",
+        "★",
+        "·"
+    ];
+
+
+    for (let i = 0; i < starCount; i++) {
+
+        const star =
+            document.createElement("span");
+
+
+        star.classList.add("star");
+
+
+        star.textContent =
+            starSymbols[
+                Math.floor(
+                    Math.random() *
+                    starSymbols.length
+                )
+            ];
+
+
+        star.style.left =
+            Math.random() * 100 + "%";
+
+
+        star.style.top =
+            Math.random() * 70 + "%";
+
+
+        star.style.fontSize =
+            (8 + Math.random() * 14) + "px";
+
+
+        star.style.animationDelay =
+            (Math.random() * 2.6) + "s";
+
+
+        star.style.setProperty(
+            "--star-opacity",
+            (0.5 + Math.random() * 0.5).toFixed(2)
+        );
+
+
+        starsLayer.appendChild(star);
+
+    }
+
+})();
+
+
+/*
+   Figure out which points on an invisible canvas
+   spell out a given name, so we know where each
+   firefly needs to land.
+*/
+function getNamePoints(name, areaWidth, areaHeight) {
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = areaWidth;
+    canvas.height = areaHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    const fontSize =
+        Math.floor(areaHeight * 0.7);
+
+    ctx.font =
+        `700 ${fontSize}px "Comic Sans MS", "Comic Sans", cursive, sans-serif`;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#ffffff";
+
+    ctx.fillText(
+        name,
+        areaWidth / 2,
+        areaHeight / 2
+    );
+
+    const imageData =
+        ctx.getImageData(0, 0, areaWidth, areaHeight).data;
+
+    const points = [];
+
+    /*
+       Sampling density — smaller step means
+       more fireflies and a crisper shape.
+    */
+    const step = 5;
+
+
+    for (let y = 0; y < areaHeight; y += step) {
+
+        for (let x = 0; x < areaWidth; x += step) {
+
+            const alpha =
+                imageData[
+                    (y * areaWidth + x) * 4 + 3
+                ];
+
+
+            if (alpha > 128) {
+
+                points.push({ x: x, y: y });
+
+            }
+
+        }
+
+    }
+
+
+    return points;
+
+}
+
+
+/*
+   Fly fireflies in from all four corners of the
+   viewport, then settle each one into place so
+   together they spell out the name.
+*/
+function spawnFireflies(name) {
+
+    firefliesLayer.innerHTML = "";
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    const areaWidth =
+        Math.min(viewportWidth * 0.85, 640);
+
+    const areaHeight =
+        Math.max(90, Math.min(viewportHeight * 0.22, 160));
+
+    const offsetX =
+        (viewportWidth - areaWidth) / 2;
+
+    const offsetY =
+        viewportHeight * 0.55;
+
+
+    let points =
+        getNamePoints(
+            name,
+            Math.floor(areaWidth),
+            Math.floor(areaHeight)
+        );
+
+
+    /*
+       Keep the firefly count reasonable so it
+       stays smooth on phones.
+    */
+    const maxFireflies = 160;
+
+    if (points.length > maxFireflies) {
+
+        const skip =
+            Math.ceil(points.length / maxFireflies);
+
+        points =
+            points.filter(function (point, index) {
+
+                return index % skip === 0;
+
+            });
+
+    }
+
+
+    const corners = [
+        { x: -40, y: -40 },
+        { x: viewportWidth + 40, y: -40 },
+        { x: -40, y: viewportHeight + 40 },
+        { x: viewportWidth + 40, y: viewportHeight + 40 }
+    ];
+
+
+    points.forEach(function (point, index) {
+
+        const firefly =
+            document.createElement("span");
+
+        firefly.classList.add("firefly");
+
+
+        const startCorner =
+            corners[index % corners.length];
+
+        firefly.style.left = startCorner.x + "px";
+        firefly.style.top = startCorner.y + "px";
+
+
+        const delay =
+            Math.random() * 0.6;
+
+        firefly.style.transitionDelay =
+            delay + "s";
+
+
+        firefliesLayer.appendChild(firefly);
+
+
+        /*
+           Force the browser to register the
+           starting position before animating
+           to the final one.
+        */
+
+        requestAnimationFrame(function () {
+
+            requestAnimationFrame(function () {
+
+                firefly.style.opacity = "1";
+
+                firefly.style.left =
+                    (offsetX + point.x) + "px";
+
+                firefly.style.top =
+                    (offsetY + point.y) + "px";
+
+            });
+
+        });
+
+    });
+
+}
+
+
+nightToggle.addEventListener("click", function () {
+
+    isNightOn = !isNightOn;
+
+    nightOverlay.classList.toggle("active", isNightOn);
+    nightToggle.classList.toggle("night-active", isNightOn);
+
+    const toggleText =
+        nightToggle.querySelector(".night-toggle-text");
+
+    const toggleIcon =
+        nightToggle.querySelector(".night-toggle-icon");
+
+
+    if (isNightOn) {
+
+        toggleText.textContent = "Turn on the lights";
+        toggleIcon.textContent = "☀️";
+
+
+        fireflyTimeout = setTimeout(function () {
+
+            spawnFireflies(BIRTHDAY_NAME);
+
+        }, 1000);
+
+    } else {
+
+        toggleText.textContent = "Turn off the lights";
+        toggleIcon.textContent = "🌙";
+
+
+        if (fireflyTimeout) {
+
+            clearTimeout(fireflyTimeout);
+
+        }
+
+
+        firefliesLayer.innerHTML = "";
+
+    }
+
+});
